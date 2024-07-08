@@ -21,7 +21,7 @@ public class DeltaTable
 
     public IDeltaFileSystem FileSystem { get; }
 
-    public DeltaArray<string> Files { get; private set; } = [];
+    public DeltaArray<DeltaFileInfo> Files { get; private set; } = [];
 
     public DeltaArray<DeltaAction> Log { get; private set; } = [];
 
@@ -42,10 +42,11 @@ public class DeltaTable
                     MetaData = action.MetaData;
                     break;
                 case { Add: not null }:
-                    Files.Add(action.Add.Path);
+                    Files.Add(new DeltaFileInfo(action.Add.Path, action.Add.Size, action.Add.ModificationTime));
                     break;
                 case { Remove: not null }:
-                    Files.Remove(action.Remove.Path);
+                    //todo: make last param nullable
+                    Files.Remove(new DeltaFileInfo(action.Remove.Path, action.Remove.Size ?? 0L, DateTimeOffset.MinValue));
                     break;
                 case { Protocol: not null }:
                     break;
@@ -92,10 +93,10 @@ public class DeltaTable
                         MetaData = action.MetaData;
                         break;
                     case { Add: not null }:
-                        Files.Add(action.Add.Path);
+                        Files.Add(new DeltaFileInfo(action.Add.Path, action.Add.Size, action.Add.ModificationTime));
                         break;
                     case { Remove: not null }:
-                        Files.Remove(action.Remove.Path);
+                        Files.Remove(new DeltaFileInfo(action.Remove.Path, action.Remove.Size ?? 0L, DateTimeOffset.MinValue));
                         break;
                     case { Protocol: not null }:
                         break;
@@ -133,9 +134,9 @@ public class DeltaTable
         [EnumeratorCancellation] CancellationToken cancellationToken = default
     )
     {
-        foreach (var path in Files)
+        foreach (var file in Files)
         {
-            using var stream = FileSystem.OpenRead(path);
+            using var stream = FileSystem.OpenRead(file.Path);
             using var fileReader = new FileReader(stream);
             using var batchReader = fileReader.GetRecordBatchReader();
             while (true)

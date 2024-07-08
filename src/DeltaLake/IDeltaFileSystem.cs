@@ -13,4 +13,6 @@ public interface IDeltaFileSystem
 
     public string CreateTempFile();
     public bool MoveFile(string source, string destination);
+
+    public IEnumerable<DeltaFileInfo> ListFiles();
 }

@@ -30,4 +30,46 @@ public class DeltaFileSystem : IDeltaFileSystem
             return false;
         }
     }
+
+    /// <summary>
+    /// List all delta files in the given path
+    /// </summary>
+    /// <returns>IEnumerable of <see cref="DeltaFileInfo"/> </returns>
+    /// <exception cref="DirectoryNotFoundException"></exception>
+    public IEnumerable<DeltaFileInfo> ListFiles()
+    {
+        var directory = new DirectoryInfo(RootPath);
+        return directory.GetFiles().Select(file => new DeltaFileInfo(file.FullName, file.Length, file.LastWriteTimeUtc));
+        // var directory = new DirectoryInfo(Path.Combine(RootPath, path));
+        // return !directory.Exists
+        //     ? throw new DirectoryNotFoundException($"Directory not found: {directory.FullName}")
+        //     : directory.GetFiles().Select(file => new DeltaFileInfo(file.FullName, file.Length, file.LastWriteTimeUtc));
+    }
+}
+
+//TODO: move to a separate file
+public class DeltaFileInfo(string path, long size, DateTimeOffset lastModified) : IEquatable<DeltaFileInfo>
+{
+    public string Path { get; } = path;
+    public long Size { get; } = size;
+    public DateTimeOffset LastModified { get; } = lastModified;
+
+    public bool Equals(DeltaFileInfo? other)
+    {
+        if (ReferenceEquals(null, other)) return false;
+        if (ReferenceEquals(this, other)) return true;
+        return Path == other.Path && Size == other.Size && LastModified.Equals(other.LastModified);
+    }
+
+    public override bool Equals(object? obj)
+    {
+        if (ReferenceEquals(null, obj)) return false;
+        if (ReferenceEquals(this, obj)) return true;
+        return obj.GetType() == GetType() && Equals((DeltaFileInfo)obj);
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(Path, Size, LastModified);
+    }
 }

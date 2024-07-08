@@ -375,8 +375,8 @@ public class DeltaTableTests
             .Build();
 
 
-        var sizeInLog = table.Log.Where(log => log.Add is not null).First().Add!.Size;
-        var sizeOnDisk = fs.GetFileSize(table.Files[0]);
+        var sizeInLog = table.Log.First(log => log.Add is not null).Add!.Size;
+        var sizeOnDisk = fs.GetFileSize(table.Files[0].Path);
 
         Assert.Equal(sizeInLog, sizeOnDisk);
     }

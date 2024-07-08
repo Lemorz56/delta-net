@@ -137,7 +137,7 @@ public class CreateTableTests
 
         table = new DeltaTable.Builder()
             .FromTable(table)
-            .Remove(table.Files[0])
+            .Remove(table.Files[0].Path)
             .Build();
 
         Assert.Equal([file1], table.GetRecordBatches(), new RecordBatchEqualityComparer());
@@ -221,7 +221,7 @@ public class CreateTableTests
 
         var table2 = new DeltaTable<TestTable>.Builder()
             .FromTable(table1)
-            .Remove(table1.Files[0])
+            .Remove(table1.Files[0].Path)
             .Add(data2.Clone())
             .Build();
 

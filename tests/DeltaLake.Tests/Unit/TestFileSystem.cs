@@ -16,4 +16,5 @@ public sealed class TestFileSystem : IDeltaFileSystem, IDisposable
     public string CreateTempFile() => _fs.CreateTempFile();
     public void Dispose() => _temp.Dispose();
     public bool MoveFile(string source, string destination) => _fs.MoveFile(source, destination);
+    public IEnumerable<DeltaFileInfo> ListFiles() => _fs.ListFiles();
 }
