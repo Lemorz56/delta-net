@@ -1,3 +1,12 @@
+## Notice
+
+If you are looking for an official implementation of delta for dotnet head over to https://github.com/delta-incubator/delta-dotnet
+
+I will decide on the future of this project shortly. Stay tuned!
+
+
+
+
 <p align="center">
     <img src="https://raw.githubusercontent.com/johnsusi/delta-net/main/docs/logo.svg" alt="delta-net logo" height="200">
 </p>
