@@ -112,6 +112,15 @@ public record class DeltaStats
             // }
         }
 
+        public void FindMinMax(BinaryArray array)
+        {
+            foreach (var item in array.Values)
+            {
+                Min = Min is null ? item : Math.Min((byte)Min, item);
+                Max = Max is null ? item : Math.Max((byte)Max, item);
+            }
+        }
+
         public void Visit(Int8Array array) => FindMinMax(array);
         public void Visit(Int16Array array) => FindMinMax(array);
         public void Visit(Int32Array array) => FindMinMax(array);
@@ -138,7 +147,7 @@ public record class DeltaStats
         public void Visit(FixedSizeListArray array) => throw new NotImplementedException("FixedSizeListArray");
         public void Visit(StringArray array) => FindMinMax(array as IReadOnlyList<string>);
         public void Visit(StringViewArray array) => FindMinMax(array as IReadOnlyList<string>);
-        public void Visit(BinaryArray array) => throw new NotImplementedException("BinaryArray");
+        public void Visit(BinaryArray array) => FindMinMax(array);
         public void Visit(BinaryViewArray array) => throw new NotImplementedException("BinaryViewArray");
         public void Visit(FixedSizeBinaryArray array) => throw new NotImplementedException("FixedSizeBinaryArray");
         public void Visit(StructArray array) => throw new NotImplementedException("StructArray");
